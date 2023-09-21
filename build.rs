@@ -95,7 +95,7 @@ fn main() {
         .block_extern_crate(true)
         .generate_block(true)
         .generate_comments(true)
-        .rustfmt_bindings(true)
+        .formatter(bindgen::Formatter::Rustfmt)
         .blocklist_item("objc_object")
         .blocklist_item("id")
         .blocklist_item("timezone")
