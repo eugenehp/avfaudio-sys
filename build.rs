@@ -77,7 +77,7 @@ fn main() {
         .block_extern_crate(true)
         .generate_block(true)
         .generate_comments(true)
-        .rustfmt_bindings(true)
+        .formatter(bindgen::Formatter::Rustfmt)
         .blocklist_item("objc_object")
         .blocklist_item("id")
         .blocklist_item("timezone")
@@ -92,7 +92,7 @@ fn main() {
         .header_contents("AVFAudio.h", "#include<AVFAudio/AVFAudio.h>")
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         // Finish the builder and generate the bindings.
         .generate()
         // Unwrap the Result and panic on failure.
