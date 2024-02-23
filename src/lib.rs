@@ -28,6 +28,9 @@
 // These lints ignore unsafe undefined behaviour
 #![allow(deref_nullptr)]
 #![allow(improper_ctypes)]
+
+#![allow(renamed_and_removed_lints)] // warning: lint `unaligned_references` has been removed: converted into hard error, see issue #82523 <https://github.com/rust-lang/rust/issues/82523> for more information
 #![allow(unaligned_references)]
+#![deny(renamed_and_removed_lints)]
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
