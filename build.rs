@@ -28,7 +28,25 @@ use std::path::PathBuf;
 fn sdk_path() -> Result<String, std::io::Error> {
     use std::process::Command;
 
+    let target = env::var("TARGET").unwrap();
+    let sdk = if target.ends_with("apple-ios") {
+        "iphoneos"
+    } else if target.ends_with("apple-ios-sim") {
+        "iphonesimulator"
+    } else if target.ends_with("apple-darwin") {
+        "macosx"
+    } else if target.ends_with("apple-watchos") {
+        "watchos"
+    } else if target.ends_with("apple-watchos-sim") {
+        "watchsimulator"
+    } else if target.ends_with("apple-tvos") {
+        "appletvos"
+    } else {
+        panic!("unknown target: {}", target);
+    };
+
     let output = Command::new("xcrun")
+        .args(["--sdk", sdk])
         .args(["--show-sdk-path"])
         .output()?
         .stdout;
