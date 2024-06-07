@@ -1,5 +1,5 @@
 [package]
-name = "avfaudio-sys"
+name = "avfaudio2-sys"
 version = "0.2.2"
 edition = "2018"
 license = "MIT"
