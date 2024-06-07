@@ -1,3 +1,7 @@
+# 0.2.2
+
+Added `visionos` support
+
 # 0.2.1
 
 * Fix build warnings
