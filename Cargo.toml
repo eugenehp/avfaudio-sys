@@ -4,8 +4,8 @@ version = "0.2.2"
 edition = "2018"
 license = "MIT"
 description = "Rust bindings to AVFAudio"
-homepage = "https://github.com/augmented-audio/avfaudio-sys"
-repository = "https://github.com/augmented-audio/avfaudio-sys"
+homepage = "https://github.com/eugenehp/avfaudio-sys"
+repository = "https://github.com/eugenehp/avfaudio-sys"
 
 [lib]
 doctest = false
