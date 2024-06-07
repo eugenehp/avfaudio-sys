@@ -1,6 +1,6 @@
 [package]
 name = "avfaudio2-sys"
-version = "0.2.2"
+version = "0.2.3"
 edition = "2018"
 license = "MIT"
 description = "Rust bindings to AVFAudio"
@@ -15,4 +15,4 @@ objc = { package = "objc2", version = "0.5.2" }
 block = { package = "block2", version = "0.5.1" }
 
 [build-dependencies]
-bindgen = "0.69.1"
+bindgen = "0.69.4"

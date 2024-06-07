@@ -1,6 +1,10 @@
+# 0.2.3
+
+* Bump bindgen to 0.69.4
+
 # 0.2.2
 
-Added `visionos` support
+* Added `visionos` support
 
 # 0.2.1
 
