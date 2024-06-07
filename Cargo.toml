@@ -1,6 +1,6 @@
 [package]
 name = "avfaudio-sys"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2018"
 license = "MIT"
 description = "Rust bindings to AVFAudio"
@@ -11,8 +11,8 @@ repository = "https://github.com/augmented-audio/avfaudio-sys"
 doctest = false
 
 [dependencies]
-objc = "0.2.7"
-block = "0.1.6"
+objc = { package = "objc2", version = "0.5.2" }
+block = { package = "block2", version = "0.5.1" }
 
 [build-dependencies]
 bindgen = "0.69.1"

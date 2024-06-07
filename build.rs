@@ -33,6 +33,10 @@ fn sdk_path() -> Result<String, std::io::Error> {
         "iphoneos"
     } else if target.ends_with("apple-ios-sim") {
         "iphonesimulator"
+    } else if target.ends_with("apple-visionos") {
+        "xros"
+    } else if target.ends_with("apple-visionos-sim") {
+        "xrsimulator"
     } else if target.ends_with("apple-darwin") {
         "macosx"
     } else if target.ends_with("apple-watchos") {
@@ -57,6 +61,8 @@ fn sdk_path() -> Result<String, std::io::Error> {
 fn main() {
     // Tell cargo to tell rustc to link the system bzip2
     // shared library.
+    // println!("cargo:rustc-link-lib=framework=Foundation");
+    // println!("cargo:rustc-link-lib=framework=CoreVideo");
     println!("cargo:rustc-link-lib=framework=AVFAudio");
 
     // Tell cargo to invalidate the built crate whenever the wrapper changes
@@ -67,6 +73,8 @@ fn main() {
     let target = env::var("TARGET").unwrap();
     let target = if target == "aarch64-apple-ios" {
         "arm64-apple-ios"
+    } else if target == "aarch64-apple-visionos" {
+        "arm64-apple-xros"
     } else {
         &target
     };
@@ -84,6 +92,23 @@ fn main() {
         clang_args.extend(["-isysroot", sdk]);
     }
 
+    let headers = vec![
+        "#define TARGET_OS_IPHONE true",
+        "AVFAudio/AVFAudio.h"
+    ];
+    let meta_headers:Vec<_> = headers
+    .iter()
+    .map(|h| {
+        if h.ends_with(".h") {
+            format!("#include<{}>\n", h)
+        }else{
+            h.to_string()
+        }
+    })
+    .collect();
+
+    let contents = meta_headers.concat();
+
     // The bindgen::Builder is the main entry point
     // to bindgen, and lets you build up options for
     // the resulting bindings.
@@ -100,6 +125,7 @@ fn main() {
         .blocklist_item("id")
         .blocklist_item("timezone")
         .blocklist_function("settimeofday")
+        .blocklist_type("NSUInteger")
         .opaque_type("FndrOpaqueInfo")
         .opaque_type("HFSPlusCatalogFile")
         .opaque_type("HFSCatalogFile")
@@ -107,7 +133,8 @@ fn main() {
         .opaque_type("HFSCatalogFolder")
         .no_copy("AudioUnitRenderContext")
         .no_debug("AudioUnitRenderContext")
-        .header_contents("AVFAudio.h", "#include<AVFAudio/AVFAudio.h>")
+        .derive_default(false)
+        .header_contents("AVFAudio.h", &contents)
         // Tell cargo to invalidate the built crate whenever any of the
         // included header files changed.
         .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
