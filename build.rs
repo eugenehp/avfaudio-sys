@@ -61,8 +61,6 @@ fn sdk_path() -> Result<String, std::io::Error> {
 fn main() {
     // Tell cargo to tell rustc to link the system bzip2
     // shared library.
-    // println!("cargo:rustc-link-lib=framework=Foundation");
-    // println!("cargo:rustc-link-lib=framework=CoreVideo");
     println!("cargo:rustc-link-lib=framework=AVFAudio");
 
     // Tell cargo to invalidate the built crate whenever the wrapper changes
@@ -71,14 +69,19 @@ fn main() {
     // Technically according to the llvm mailing list, the argument to clang here should be
     // -arch arm64 but it looks cleaner to just change the target.
     let target = env::var("TARGET").unwrap();
-    let target = if target == "aarch64-apple-ios" {
+
+    let is_visionos = target.contains("apple-visionos");
+
+    let clang_target = if target.starts_with("aarch64-apple-ios") {
         "arm64-apple-ios"
-    } else if target == "aarch64-apple-visionos" {
+    } else if target.starts_with("aarch64-apple-visionos") {
         "arm64-apple-xros"
+    } else if target.starts_with("aarch64-apple-darwin") {
+        "arm64-apple-darwin"
     } else {
         &target
     };
-    let target_arg = format!("--target={}", target);
+    let target_arg = format!("--target={}", clang_target);
     let sdk = sdk_path().ok();
     let sdk = sdk.as_ref().map(String::as_ref);
     let mut clang_args = vec![
@@ -92,17 +95,29 @@ fn main() {
         clang_args.extend(["-isysroot", sdk]);
     }
 
-    let headers = vec![
-        "#define TARGET_OS_IPHONE true",
-        "AVFAudio/AVFAudio.h"
-    ];
+    let mut headers = vec![""];
+
+    if is_visionos {
+        // headers.push("#ifndef TARGET_OS_IPHONE");
+        headers.push("#define TARGET_OS_IPHONE 1");
+        // headers.push("#endif");
+
+        headers.push("typedef long           NSInteger;");
+        headers.push("typedef unsigned long  NSUInteger;");
+        headers.push("#define NSIntegerMin   INT_MIN");
+        headers.push("#define NSIntegerMax   INT_MAX");
+        headers.push("#define NSUIntegerMax  UINT_MAX");
+    }
+
+    headers.push("AVFAudio/AVFAudio.h");
+
     let meta_headers:Vec<_> = headers
     .iter()
     .map(|h| {
         if h.ends_with(".h") {
             format!("#include<{}>\n", h)
         }else{
-            h.to_string()
+            format!("{}\n", h)
         }
     })
     .collect();
@@ -125,7 +140,6 @@ fn main() {
         .blocklist_item("id")
         .blocklist_item("timezone")
         .blocklist_function("settimeofday")
-        .blocklist_type("NSUInteger")
         .opaque_type("FndrOpaqueInfo")
         .opaque_type("HFSPlusCatalogFile")
         .opaque_type("HFSCatalogFile")

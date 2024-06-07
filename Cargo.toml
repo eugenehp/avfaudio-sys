@@ -1,9 +1,10 @@
 [package]
 name = "avfaudio2-sys"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2018"
 license = "MIT"
 description = "Rust bindings to AVFAudio"
+authors = ["Pedro Tacla Yamada", "Eugene Hauptmann"]
 homepage = "https://github.com/eugenehp/avfaudio-sys"
 repository = "https://github.com/eugenehp/avfaudio-sys"
 
@@ -11,8 +12,13 @@ repository = "https://github.com/eugenehp/avfaudio-sys"
 doctest = false
 
 [dependencies]
-objc = { package = "objc2", version = "0.5.2" }
-block = { package = "block2", version = "0.5.1" }
+objc = "0.2.7"
+block  = "0.1.6"
+# objc = { package = "objc2", version = "0.5.2" }
+# block = { package = "block2", version = "0.5.1" }
+
+[[example]]
+name = "session"
 
 [build-dependencies]
 bindgen = "0.69.4"

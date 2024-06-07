@@ -1,3 +1,8 @@
+# 0.2.4
+
+* Added `session` example.
+* Fixed rust-bindgen bug for `visionos`.
+
 # 0.2.3
 
 * Bump bindgen to 0.69.4
